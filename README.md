@@ -291,3 +291,78 @@ Create data, download and run sql against database.
 ## Django ORM
 
 https://docs.djangoproject.com/en/5.0/ref/models/querysets/
+
+# Admin Site
+
+Accessible through url /admin
+
+## Configuration
+
+### Create user:
+
+`python3 manage.py createsuperuser`
+
+### Update password:
+
+`python3 manage.y changepassword <user>`
+
+### Customize Headings:
+In the project `urls.py` file:
+
+```
+from django.contrib import admin
+from django.urls import path, include
+from debug_toolbar.toolbar import debug_toolbar_urls
+
+admin.site.site_header = 'Storefront Admin'
+admin.site.index_title = 'Admin'
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('playground/', include('playground.urls'))
+] + debug_toolbar_urls()
+```
+
+## Register Models
+In the APP `admin.py` file, register the model:
+
+```
+from django.contrib import admin
+from . import models
+# Register your models here.
+admin.site.register(models.Collection)
+```
+
+### Update _str__ 
+Overwrite the magic `__str__` method to change the string representation of an object.  This is for better readability in the admin site listing of the Model.  
+
+Additionally, add a Meta class for sorting.
+
+```
+class Collection(models.Model):
+    title = models.CharField(max_length=255)
+    featured_product = models.ForeignKey('Product',on_delete=models.SET_NULL,null=True, related_name='+')
+    
+    def __str__(self) -> str:
+        return self.title
+    
+    class Meta():
+        ordering = ['title']
+```
+## Model Admin
+https://docs.djangoproject.com/en/5.0/ref/contrib/admin/#modeladmin-objects
+
+```
+from django.contrib import admin
+from . import models
+
+@admin.register(models.Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = [ 'title' , 'unit_price']
+    list_editable = ['unit_price']
+    list_per_page  = 10
+
+# Register your models here.
+admin.site.register(models.Collection)
+
+```

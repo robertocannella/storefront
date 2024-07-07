@@ -1,10 +1,17 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 
 # Create your models here.
 
 class Collection(models.Model):
     title = models.CharField(max_length=255)
     featured_product = models.ForeignKey('Product',on_delete=models.SET_NULL,null=True, related_name='+')
+    
+    def __str__(self) -> str:
+        return self.title
+    
+    class Meta():
+        ordering = ['title']
 
 class Promotion(models.Model):
     description = models.CharField(max_length=255)
@@ -14,13 +21,27 @@ class Product(models.Model):
     #  Custom Primary Key:
     #  product_id = models.CharField(max_length=15, primary_key=True)
     title = models.CharField(max_length=255)
-    description = models.TextField()
-    slug = models.SlugField(default='-')
-    unit_price = models.DecimalField(max_digits=10, decimal_places=3)
-    inventory = models.IntegerField()
+    description = models.TextField(null=True, blank=True)
+    slug = models.SlugField()
+    unit_price = models.DecimalField(
+        max_length=100,
+        max_digits=10, 
+        decimal_places=3, 
+        validators=[
+            MinValueValidator(1)
+        ])
+    inventory = models.IntegerField(validators=[
+        MinValueValidator(0)
+    ])
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
-    promotions = models.ManyToManyField(Promotion)
+    promotions = models.ManyToManyField(Promotion, blank=True)
+
+    def __str__(self) -> str:
+        return self.title
+    
+    class Meta():
+        ordering = ['title']
 
 class Customer(models.Model):
     MEMBERSHIP_GOLD = 'G'
@@ -39,9 +60,12 @@ class Customer(models.Model):
     birth_date = models.DateField(null=True)
     membership = models.CharField(max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
 
-    class Meta:
-        indexes = models.Index(fields=["last_name", "first_name"]),
+    def __str__(self) -> str:
+        return f'{self.last_name}, {self.first_name}'
 
+    class Meta():
+        indexes = models.Index(fields=["last_name", "first_name"]),
+        ordering = ['last_name', 'first_name']
 class Order(models.Model):
     PAYMENT_STATUS_PENDING = 'P'
     PAYMENT_STATUS_COMPLETE = 'C'
@@ -56,10 +80,13 @@ class Order(models.Model):
     placed_at = models.DateTimeField(auto_now_add=True)
     payment_status = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    
+    class Meta():
+        ordering = ['placed_at']
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, null=True)
     quantity = models.PositiveSmallIntegerField()
     unit_price = models.DecimalField(max_digits=10,decimal_places=3)
 
