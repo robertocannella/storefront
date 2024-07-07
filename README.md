@@ -287,3 +287,7 @@ class Migration(migrations.Migration):
 https://mockaroo.com/
 
 Create data, download and run sql against database.
+
+## Django ORM
+
+https://docs.djangoproject.com/en/5.0/ref/models/querysets/

@@ -5,6 +5,22 @@
         {% else %}
         <h1>Hello world</h1>
         {% endif %}
+        <ul>
+
+            {% for collection in collection %}
+    
+                <li> {{ collection.featured_product_id }} </li>
+    
+            {% endfor %}
+            </ul>
+        <ul>
+
+        {% for customer in customers %}
+
+            <li> {{ customer.email }} </li>
+
+        {% endfor %}
+        </ul>
     </body>
 </html>
 
