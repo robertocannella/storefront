@@ -366,3 +366,103 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(models.Collection)
 
 ```
+# REST Framework
+## Installation
+To install rest framework:
+
+`pip install djangorestframework`
+
+Add app to  `settings.py`
+
+```
+    INSTALLED_APPS = [
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+
+        'rest_framework'
+
+        'playground',
+        'debug_toolbar',
+        'store',
+        'store_custom',
+        'tag',
+        'likes'
+
+    ]
+```
+
+## Add API View using Django
+
+### Create response method
+#### Recommended to use rest_framework views_api below
+To create an API endpoint, or View in Django, create a function in the app's `views.py` file
+
+```
+from django.shortcuts import render
+from django.http import HttpResponse
+
+# Create your views here.
+def product_list(request):
+    return HttpResponse('ok')
+```
+
+### Add Routes
+
+Create a `urls.py` file, if it doesn't not exist in the current app:
+
+```
+from django.urls import path
+from . import views
+
+#URL conf
+urlpatterns = [
+    path('products/', views.product_list)
+]
+```
+
+Add the store url to the project's `urls.py` file:
+
+```
+    urlpatterns = [
+        path('admin/', admin.site.urls),
+        path('playground/', include('playground.urls')),
+        path('api/v1/', include('store.urls'))
+    ] + debug_toolbar_urls()
+```
+
+## Add API View using rest_framework:
+
+* Add `api_view()` decorator to the method. 
+* Change the response from django `HTTPResponse` to the rest_framework `Response`.  
+* Import all objects:
+
+```
+from django.shortcuts import render
+from django.http import HttpResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+# Create your views here.
+@api_view()
+def product_list(request):
+    return Response('ok')
+```
+
+## Accepting Parameters
+
+
+```
+    from django.urls import path
+    from . import views
+
+    #URL conf
+    urlpatterns = [
+        path('products/', views.product_list),
+        path('products/<int:id>/', views.product_detail)
+    ]
+```
+## Serializers
