@@ -466,3 +466,69 @@ def product_list(request):
     ]
 ```
 ## Serializers
+Serializers are used to map Models to Python Dictionaries.
+
+### Creating Serializer
+Create the `serializers.py` file in the app.
+
+Import the serializers module from rest_framework, then create a class the inherits from the serializer.
+
+```
+from rest_framework import serializers
+
+class ProductSerializer(serializers):
+    # properties...
+```
+
+Define the properties to expose externally from the internal model. In this case the Product Model, defined in `models.py`
+
+[Serializer Reference](https://www.django-rest-framework.org/api-guide/fields/)
+
+
+```
+from rest_framework import serializers
+
+class ProductSerializer(serializers):
+    id = serializers.IntegerField()
+    title = serializers.CharField(max_length=255)
+    price = serializers.DecimalField(max_digits=10,decimal_places=3)
+```
+### Serializing Objects
+
+In the `views.py` file, import the newly created ProductSerializer class as well as the Product model. 
+
+The serialized Product can be access via the `data` property of the serializer instance. In this case: `serializer.data`
+```
+    ... other imports
+    from .models import Product
+    from .serializers import ProductSerializer
+
+    ...
+    ... other views 
+    ...
+
+    @api_view()
+    def product_detail(request, id):
+        product = Product.objects.get(pk=id)
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
+
+```
+### Custom Serializer Fields
+
+To create custom serializer fields, use a function type called MethodField:
+
+```
+class ProductSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    title = serializers.CharField(max_length=255)'
+
+    # Also can set custom name using 'source=' parameter
+    price = serializers.DecimalField(max_digits=10,decimal_places=3, source='unit_price')
+    price_with_tax = serializers.SerializerMethodField(method_name='calculate_tax')
+
+    def calculate_tax(self,product:Product):
+        return product.unit_price * Decimal(1.1)
+```
+
+

@@ -89,6 +89,13 @@ DATABASES = {
         'HOST': 'localhost',
         'USER': 'root',
         'PASSWORD': ''
+    },
+    'fitness': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'fitness',
+        'HOST': 'localhost',
+        'USER': 'roberto',
+        'PASSWORD': 'roberto1'
     }
 }
 
