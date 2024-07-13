@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'store',
     'store_custom',
+    'fitness',
     'tag',
     'likes'
 
@@ -89,14 +90,16 @@ DATABASES = {
         'HOST': 'localhost',
         'USER': 'root',
         'PASSWORD': ''
-    },
-    'fitness': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'fitness',
-        'HOST': 'localhost',
-        'USER': 'roberto',
-        'PASSWORD': 'roberto1'
     }
+    # TODO: create a database router to connect to this database
+    # ,
+    # 'fitness': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'fitness',
+    #     'HOST': 'localhost',
+    #     'USER': 'roberto',
+    #     'PASSWORD': 'roberto1'
+    # }
 }
 
 
