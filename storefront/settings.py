@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'playground',
+    'fitness',
     'debug_toolbar',
     'store',
     'store_custom',
