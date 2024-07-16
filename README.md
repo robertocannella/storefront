@@ -532,3 +532,63 @@ class ProductSerializer(serializers.Serializer):
 ```
 
 
+## Creating the Fitness Models
+
+Run this to test the model
+
+### enter the python shell
+```
+python manage.py shell
+
+```
+
+### Import models/utils
+```
+from fitness.models import ExerciseSession, Exercise, ExerciseSet, Unit, EquipmentType, ExerciseType
+from django.utils import timezone
+
+```
+### Add the data
+
+```
+# Create Unit instances
+lbs = Unit.objects.create(name="lbs")
+kgs = Unit.objects.create(name="kgs")
+seconds = Unit.objects.create(name="seconds")
+minutes = Unit.objects.create(name="minutes")
+
+# Create EquipmentType instances
+bodyweight = EquipmentType.objects.create(name="Bodyweight")
+dumbbell = EquipmentType.objects.create(name="Dumbbell")
+barbell = EquipmentType.objects.create(name="Barbell")
+
+# Create ExerciseType instances
+pushups_type = ExerciseType.objects.create(name="Push-ups")
+squats_type = ExerciseType.objects.create(name="Squats")
+bench_press_type = ExerciseType.objects.create(name="Bench Press")
+plank_type = ExerciseType.objects.create(name="Plank")
+
+# Create an ExerciseSession instance
+session1 = ExerciseSession.objects.create(date=timezone.now(), start_time=timezone.now())
+
+# Create Exercise instances within the session
+pushups = Exercise.objects.create(session=session1, exercise_type=pushups_type)
+squats = Exercise.objects.create(session=session1, exercise_type=squats_type)
+bench_press = Exercise.objects.create(session=session1, exercise_type=bench_press_type)
+plank = Exercise.objects.create(session=session1, exercise_type=plank_type)
+
+# Create ExerciseSet instances associated with the exercises
+set1 = ExerciseSet.objects.create(exercise=pushups, repetitions=15, equipment_type=bodyweight, duration=None, duration_unit=None, weight=None, weight_unit=None)
+set2 = ExerciseSet.objects.create(exercise=squats, repetitions=20, equipment_type=bodyweight, duration=None, duration_unit=None, weight=None, weight_unit=None)
+set3 = ExerciseSet.objects.create(exercise=bench_press, repetitions=10, equipment_type=barbell, duration=None, duration_unit=None, weight=50.0, weight_unit=lbs)
+set4 = ExerciseSet.objects.create(exercise=plank, repetitions=1, equipment_type=bodyweight, duration=timezone.timedelta(minutes=1), duration_unit=minutes, weight=None, weight_unit=None)
+```
+
+### Run a query
+```
+# Access all exercise sets related to the first session
+sets_for_session1 = session1.exercises.all()
+for exercise in sets_for_session1:
+    for exercise_set in exercise.sets.all():
+        print(exercise_set)  # Outputs details for each set
+```
