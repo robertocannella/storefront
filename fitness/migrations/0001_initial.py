@@ -2,6 +2,7 @@
 
 import django.db.models.deletion
 import django.utils.timezone
+
 from django.db import migrations, models
 
 
@@ -34,6 +35,7 @@ class Migration(migrations.Migration):
             name='ExerciseType',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+
                 ('name', models.CharField(max_length=100, unique=True)),
             ],
         ),
@@ -63,6 +65,7 @@ class Migration(migrations.Migration):
                 ('exercise', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sets', to='fitness.exercise')),
                 ('duration_unit', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='duration_unit', to='fitness.unit')),
                 ('weight_unit', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='weight_unit', to='fitness.unit')),
+
             ],
         ),
     ]

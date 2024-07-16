@@ -12,6 +12,7 @@ class Collection(models.Model):
     
     class Meta():
         ordering = ['title']
+  
 
 class Promotion(models.Model):
     description = models.CharField(max_length=255)

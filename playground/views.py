@@ -23,5 +23,4 @@ def say_hello(request):
                   {'name': "Roberto", 
                    'customers': customers,
                    'collections': collections
-                   
                    })
