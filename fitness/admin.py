@@ -1,35 +1,49 @@
-from typing import Any
-from django.contrib import admin, messages
-from django.db.models.query import QuerySet
-from django.http import HttpRequest
-from django.utils.html import format_html, urlencode
-from django.urls import reverse
+from django.contrib import admin
+from django.forms.models import BaseInlineFormSet
+from .models import ExerciseSession, Unit, EquipmentType, ExerciseType, Exercise, ExerciseSet
 
-from tag.models import TaggedItem
-from . import models
-from django.db.models import Count
+class ExerciseSetInlineFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super(ExerciseSetInlineFormSet, self).__init__(*args, **kwargs)
+        for i in range(3 - len(self.forms)):
+            self.forms.append(self._construct_form(i))
 
-    
-@admin.register(models.ExerciseLog)
-class ExerciseLog(admin.ModelAdmin):
-    list_display= ['log_id','name']
+class ExerciseSetInline(admin.TabularInline):
+    model = ExerciseSet
+    formset = ExerciseSetInlineFormSet
+    extra = 3
 
-@admin.register(models.ExerciseType)
-class ExerciseType(admin.ModelAdmin):
-    list_display = [ 'id','name']
-    list_editable = ['name']
+class ExerciseInline(admin.TabularInline):
+    model = Exercise
+    extra = 1
+    inlines = [ExerciseSetInline]
 
-    
-@admin.register(models.ExerciseRoutine)
-class ExerciseLogMeta(admin.ModelAdmin):
-    list_display = [  'date', 'start_time', 'end_time', 'description']
+class ExerciseSessionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'date', 'start_time', 'end_time')
+    inlines = [ExerciseInline]
 
-@admin.register(models.Units)
-class ExerciseLogMeta(admin.ModelAdmin):
-    list_display = [  'name' ]
+@admin.register(Unit)
+class UnitAdmin(admin.ModelAdmin):
+    list_display = ('name',)
 
-@admin.register(models.EquipmentType)
-class ExerciseLogMeta(admin.ModelAdmin):
+@admin.register(EquipmentType)
+class EquipmentTypeAdmin(admin.ModelAdmin):
+    list_display = ('name',)
 
-    list_display = [ 'name']
+@admin.register(ExerciseType)
+class ExerciseTypeAdmin(admin.ModelAdmin):
+    list_display = ('name',)
 
+@admin.register(Exercise)
+class ExerciseAdmin(admin.ModelAdmin):
+    list_display = ('exercise_type', 'session')
+    inlines = [ExerciseSetInline]
+
+@admin.register(ExerciseSet)
+class ExerciseSetAdmin(admin.ModelAdmin):
+    list_display = ('exercise', 'repetitions', 'weight', 'weight_unit', 'equipment_type', 'duration', 'duration_unit')
+
+@admin.register(ExerciseSession)
+class ExerciseSessionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'date', 'start_time', 'end_time')
+    inlines = [ExerciseInline]

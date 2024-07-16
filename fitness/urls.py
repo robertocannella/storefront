@@ -3,6 +3,6 @@ from . import views
 
 #URL conf
 urlpatterns = [
-    path('exercises/', views.exercise_list),
-    path('exercises/<int:id>/', views.exercise_detail)
+    path('sessions/', views.session_list),
+    path('sessions/<int:id>/', views.session_detail)
 ]
